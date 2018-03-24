@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ClientMainWindow</class>
+ <widget class="QMainWindow" name="ClientMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>768</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Video Panzer</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="6,3,4,1">
+    <item>
+     <widget class="CameraHandler" name="mainCameraHandler" native="true"/>
+    </item>
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="ConversationCameraHandler" name="conversationCameraHandler">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1004</width>
+         <height>146</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTextBrowser" name="textBrowser">
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="InputMessage" name="inputMessage">
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1024</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ConversationCameraHandler</class>
+   <extends>QWidget</extends>
+   <header>conversationcamerahandler.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>InputMessage</class>
+   <extends>QPlainTextEdit</extends>
+   <header>inputmessage.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CameraHandler</class>
+   <extends>QWidget</extends>
+   <header>camerahandler.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
