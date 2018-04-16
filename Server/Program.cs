@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
+using Server.Data;
+using Server.Data.DbContexts;
 
 namespace Server
 {
@@ -9,7 +11,9 @@ namespace Server
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            BuildWebHost(args)
+                .EnsureDatabaseCreated<UserDbContext>()
+                .Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
