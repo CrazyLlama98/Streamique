@@ -74,5 +74,19 @@ namespace Server.Services
                 return null;
             }
         }
+
+        public async Task<bool> LogoffUserAsync()
+        {
+            try
+            {
+                await _signInManager.SignOutAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(LoggingEvents.AuthorizationEvents.LogoffError, e, "Error on log off");
+                return false;
+            }
+        }
     }
 }

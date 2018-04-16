@@ -14,6 +14,7 @@ namespace Server.Services.Constants
             public const int RegisterError = 1001;
             public const int LoginError = 1002;
             public const int JWTGenerationError = 1003;
+            public const int LogoffError = 1004;
         }
     }
 }

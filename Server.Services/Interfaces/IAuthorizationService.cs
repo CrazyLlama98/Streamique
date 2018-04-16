@@ -9,5 +9,6 @@ namespace Server.Services.Interfaces
         string GenerateJwt();
         Task<IdentityResult> RegisterUserAsync(RegistrationDto registerDto);
         Task<SignInResult> LoginUserAsync(LoginDto loginDto);
+        Task<bool> LogoffUserAsync();
     }
 }

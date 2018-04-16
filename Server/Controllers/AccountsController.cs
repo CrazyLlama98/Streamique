@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data.DTOs;
-using Server.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -52,6 +51,14 @@ namespace Server.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
             return BadRequest();
+        }
+
+        [HttpPost("logoff")]
+        public async Task<IActionResult> Logoff()
+        {
+            if (await _authorizationService.LogoffUserAsync())
+                return Ok();
+            return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
 }
