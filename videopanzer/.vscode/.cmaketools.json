@@ -1,0 +1,205 @@
+{
+  "variant": {
+    "label": "Debug",
+    "keywordSettings": {
+      "buildType": "debug"
+    },
+    "description": "Emit debug information without performing optimizations"
+  },
+  "activeEnvironments": [],
+  "codeModel": {
+    "configurations": [
+      {
+        "name": "Debug",
+        "projects": [
+          {
+            "buildDirectory": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build",
+            "hasInstallRule": false,
+            "minimumCMakeVersion": "2.8.12",
+            "name": "videopanzer",
+            "sourceDirectory": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer",
+            "targets": [
+              {
+                "artifacts": [
+                  "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build/videopanzer"
+                ],
+                "buildDirectory": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-g   -std=c++11 -fPIC",
+                    "defines": [
+                      "QT_CORE_LIB",
+                      "QT_GUI_LIB",
+                      "QT_MULTIMEDIAWIDGETS_LIB",
+                      "QT_MULTIMEDIA_LIB",
+                      "QT_NETWORK_LIB",
+                      "QT_WIDGETS_LIB"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build"
+                      },
+                      {
+                        "path": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer"
+                      },
+                      {
+                        "path": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build/videopanzer_autogen/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtWidgets"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtGui"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtMultimedia"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtNetwork"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtMultimediaWidgets"
+                      }
+                    ],
+                    "isGenerated": true,
+                    "language": "CXX",
+                    "sources": [
+                      "build/videopanzer_autogen/mocs_compilation.cpp"
+                    ]
+                  },
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/ui_client.h"
+                    ]
+                  },
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "client.h",
+                      "cameraframegrabber.h",
+                      "conversationcamerahandler.h",
+                      "camerahandler.h",
+                      "inputmessage.h",
+                      "client.ui"
+                    ]
+                  },
+                  {
+                    "compileFlags": "-g   -std=c++11 -fPIC",
+                    "defines": [
+                      "QT_CORE_LIB",
+                      "QT_GUI_LIB",
+                      "QT_MULTIMEDIAWIDGETS_LIB",
+                      "QT_MULTIMEDIA_LIB",
+                      "QT_NETWORK_LIB",
+                      "QT_WIDGETS_LIB"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build"
+                      },
+                      {
+                        "path": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer"
+                      },
+                      {
+                        "path": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build/videopanzer_autogen/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtWidgets"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtGui"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtMultimedia"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtNetwork"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/include/x86_64-linux-gnu/qt5/QtMultimediaWidgets"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "main.cpp",
+                      "client.cpp",
+                      "cameraframegrabber.cpp",
+                      "conversationcamerahandler.cpp",
+                      "camerahandler.cpp",
+                      "inputmessage.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "videopanzer",
+                "isGeneratorProvided": false,
+                "linkFlags": "-rdynamic",
+                "linkLanguageFlags": "-g",
+                "linkLibraries": "/usr/lib/x86_64-linux-gnu/libQt5MultimediaWidgets.so.5.5.1 /usr/lib/x86_64-linux-gnu/libQt5Widgets.so.5.5.1 /usr/lib/x86_64-linux-gnu/libQt5Multimedia.so.5.5.1 /usr/lib/x86_64-linux-gnu/libQt5Network.so.5.5.1 /usr/lib/x86_64-linux-gnu/libQt5Gui.so.5.5.1 /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.5.1",
+                "linkerLanguage": "CXX",
+                "name": "videopanzer",
+                "sourceDirectory": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer",
+                "type": "EXECUTABLE"
+              },
+              {
+                "buildDirectory": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer/build",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/CMakeFiles/videopanzer_autogen",
+                      "build/CMakeFiles/videopanzer_autogen.rule"
+                    ]
+                  }
+                ],
+                "fullName": "videopanzer_autogen",
+                "isGeneratorProvided": true,
+                "name": "videopanzer_autogen",
+                "sourceDirectory": "/home/aaether/Desktop/Work/mds/Streamique/videopanzer",
+                "type": "UTILITY"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cookie": "0.7350619497662496",
+    "inReplyTo": "codemodel",
+    "type": "reply"
+  }
+}

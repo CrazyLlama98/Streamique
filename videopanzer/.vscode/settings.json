@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "qscrollarea": "cpp",
+        "qpaintevent": "cpp",
+        "qpainter": "cpp"
+    }
+}
