@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QMessageBox>
 
+Q_DECLARE_METATYPE(pj::CallInfo)
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -12,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->number->setFont(QFont("Helvetica", 12, QFont::Bold));
     connect(ui->callButton, &QPushButton::clicked, this, &MainWindow::onCall);
+    connect(ui->hangupButton, &QPushButton::clicked, this, &MainWindow::onHangup);
 
     outgoingRing.setSource(QUrl::fromLocalFile(":/sounds/ring.wav"));
     outgoingRing.setLoopCount(QSoundEffect::Infinite);
@@ -23,24 +26,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::registerSIP()
 {
+    qRegisterMetaType<pj::CallInfo>();
     m_SIPManager = new SIPManager(PJSIP_TRANSPORT_UDP, 5061);
-    connect(m_SIPManager, SIGNAL(callStateChanged(int, int, int, int, QString)), this, SLOT(on_callState_changed(int, int, int, int, QString)));
+    m_SIPManager->connect(m_SIPManager, &SIPManager::callStateChanged, this, &MainWindow::onCallStateChanged);
     m_SIPManager->createAccount("sip:1234@192.168.1.20", "sip:192.168.1.20", "1234", "1234");
 }
-
-//void MainWindow::on_hangButton_clicked()
-//{
-//    ui->number->clear();
-//    metaVoIP->hangupCall(callId);
-//    sipState = "";
-//    ui->info->clear();
-//}
-//
 
 void MainWindow::onCall()
 {
     if(m_SIPState == SIP_STATE::E_LOCAL_RING_STATE) {
-        m_SIPManager->acceptCall(0);
+        m_SIPManager->acceptCall();
         m_SIPState = SIP_STATE::E_CALLING_STATE;
         ringtone.stop();
     }
@@ -49,39 +44,45 @@ void MainWindow::onCall()
         ui->number->clear();
     }
 }
-//
-//void MainWindow::on_callState_changed(int role, int callId, int state, int status, QString remoteUri)
-//{
-//    if(state == PJSIP_INV_STATE_EARLY && status == 180)
-//    {
-//        if(role == 1)
-//        {
-//            ui->info->setText(remoteUri + " is calling...");
-//            sipState = "localRing";
-//            ringtone.play();
-//        }
-//        else
-//        {
-//            sipState = "remoteRing";
-//            outgoingRing.play();
-//        }
-//
-//        this->callId = callId;
-//    }
-//    else if(state == PJSIP_INV_STATE_CONFIRMED && status == 200)
-//    {
-//        sipState = "calling";
-//        ringtone.stop();
-//        outgoingRing.stop();
-//    }
-//    else if(state == PJSIP_INV_STATE_DISCONNECTED)
-//    {
-//        ui->info->clear();
-//        sipState = "";
-//        ringtone.stop();
-//        outgoingRing.stop();
-//    }
-//}
+
+void MainWindow::onHangup()
+{
+    ui->number->clear();
+    m_SIPManager->hangupCall();
+    m_SIPState = SIP_STATE::E_NO_STATE;
+    //ui->info->clear();
+}
+
+void MainWindow::onCallStateChanged(pj::CallInfo callInfo, const QString& remoteUri)
+{
+    if(callInfo.state == PJSIP_INV_STATE_EARLY && callInfo.lastStatusCode == 180)
+    {
+        if(callInfo.role == 1)
+        {
+            //ui->info->setText(remoteUri + " is calling...");
+            m_SIPState = SIP_STATE::E_LOCAL_RING_STATE;
+            ringtone.play();
+        }
+        else
+        {
+            m_SIPState = SIP_STATE::E_REMOTE_RING_STATE;
+            outgoingRing.play();
+        }
+    }
+    else if(callInfo.state == PJSIP_INV_STATE_CONFIRMED && callInfo.lastStatusCode == 200)
+    {
+        m_SIPState = SIP_STATE::E_CALLING_STATE;
+        ringtone.stop();
+        outgoingRing.stop();
+    }
+    else if(callInfo.state == PJSIP_INV_STATE_DISCONNECTED)
+    {
+        //ui->info->clear();
+        m_SIPState = SIP_STATE::E_NO_STATE;
+        ringtone.stop();
+        outgoingRing.stop();
+    }
+}
 
 MainWindow::~MainWindow()
 {

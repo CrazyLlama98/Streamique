@@ -32,7 +32,7 @@ SIPManager::~SIPManager()
     }
 }
 
-void SIPManager::createAccount(QString idUri, QString registrarUri, QString user, QString password)
+void SIPManager::createAccount(const QString &idUri, const QString &registrarUri, const QString &user, const QString &password)
 {
     try {
         m_accountConfig.idUri = idUri.toStdString();
@@ -73,7 +73,7 @@ void SIPManager::unregisterAccount()
     }
 }
 
-void SIPManager::makeCall(QString number)
+void SIPManager::makeCall(const QString &number)
 {
     m_SIPCall = new SIPCall(this, *m_SIPAccount);
     pj::CallOpParam callOperationParameter(true);
@@ -84,31 +84,30 @@ void SIPManager::makeCall(QString number)
     }
 }
 
-void SIPManager::acceptCall(pjsua_call_id callId)
+void SIPManager::acceptCall()
 {
     try {
-        m_SIPCall = new SIPCall(this, *m_SIPAccount, callId);
-        pj::CallOpParam prm;
-        prm.statusCode = PJSIP_SC_OK;
-        m_SIPCall->answer(prm);
+        m_SIPCall = new SIPCall(this, *m_SIPAccount, m_currentCallId);
+        pj::CallOpParam callOperationParameter;
+        callOperationParameter.statusCode = PJSIP_SC_OK;
+        m_SIPCall->answer(callOperationParameter);
     } catch(pj::Error& error) {
         qDebug() << "Accepting failed: " << error.info().c_str();
     }
 }
 
-void SIPManager::hangupCall(pjsua_call_id callId)
+void SIPManager::hangupCall()
 {
-    Q_UNUSED(callId)
     try {
-        pj::CallInfo ci = m_SIPCall->getInfo();
-        pj::CallOpParam prm;
-        if(ci.lastStatusCode == PJSIP_SC_RINGING) {
-            prm.statusCode = PJSIP_SC_BUSY_HERE;
+        pj::CallInfo callInfo = m_SIPCall->getInfo();
+        pj::CallOpParam callOperationParameter;
+        if(callInfo.lastStatusCode == PJSIP_SC_RINGING) {
+            callOperationParameter.statusCode = PJSIP_SC_BUSY_HERE;
         }
         else {
-            prm.statusCode = PJSIP_SC_OK;
+            callOperationParameter.statusCode = PJSIP_SC_OK;
         }
-        m_SIPCall->hangup(prm);
+        m_SIPCall->hangup(callOperationParameter);
     } catch(pj::Error& error) {
             qDebug() << "HangupCall failed" << error.info().c_str();
     }
@@ -118,9 +117,9 @@ void SIPManager::ring(pjsua_call_id callId)
 {
     try {
         m_SIPCall = new SIPCall(this, *m_SIPAccount, callId);
-        pj::CallOpParam prm;
-        prm.statusCode = PJSIP_SC_RINGING;
-        m_SIPCall->answer(prm);
+        pj::CallOpParam callOperationParameter;
+        callOperationParameter.statusCode = PJSIP_SC_RINGING;
+        m_SIPCall->answer(callOperationParameter);
     } catch(pj::Error& error) {
         qDebug() << "Ringing failed: " << error.info().c_str();
     }
@@ -136,11 +135,13 @@ void SIPManager::emitRegStateChanged(bool status)
     emit regStateChanged(status);
 }
 
-void SIPManager::emitCallStateChanged(int role, int callId, int state, int status, QString id)
+void SIPManager::onCallStateChanged(pj::CallInfo callInfo, const QString &remoteUri)
 {
-    if (state == PJSIP_INV_STATE_DISCONNECTED) {
+    if (callInfo.state == PJSIP_INV_STATE_DISCONNECTED) {
+        qDebug() << "Deleting current call as result of disconnection!";
         delete m_SIPCall;
         m_SIPCall = nullptr;
     }
-    emit callStateChanged(role, callId, state, status, id);
+    m_currentCallId = callInfo.id;
+    emit callStateChanged(callInfo, remoteUri);
 }

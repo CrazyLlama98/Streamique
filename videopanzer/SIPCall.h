@@ -10,8 +10,8 @@ public:
     explicit SIPCall(SIPManager* _SIPManager, pj::Account& _SIPAccount, pjsua_call_id callId = PJSUA_INVALID_ID);
     virtual ~SIPCall() override;
 
-    virtual void onCallState(pj::OnCallStateParam &prm);
-    virtual void onCallMediaState(pj::OnCallMediaStateParam &prm);
+    virtual void onCallState(pj::OnCallStateParam &callStateParameter);
+    virtual void onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParameter);
     virtual void onCallTransferRequest(pj::OnCallTransferRequestParam &prm);
     virtual void onCallTransferStatus(pj::OnCallTransferStatusParam &prm);
     virtual void onCallReplaceRequest(pj::OnCallReplaceRequestParam &prm);

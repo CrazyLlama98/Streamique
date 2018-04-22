@@ -15,6 +15,9 @@ extern "C" {
 #include <pjsua-lib/pjsua.h>
 }
 
+class SIPAccount;
+class SIPCall;
+
 class SIPManager : public QObject
 {
     Q_OBJECT
@@ -23,31 +26,32 @@ public:
     explicit SIPManager(pjsip_transport_type_e transportType, quint16 port, QObject* parent = nullptr);
     virtual ~SIPManager() override;
 
-    void createAccount(QString idUri, QString registrarUri, QString user, QString password);
+    void createAccount(const QString& idUri, const QString& registrarUri, const QString& user, const QString& password);
     void registerAccount();
     void unregisterAccount();
 
-    void makeCall(QString number);
-    void acceptCall(pjsua_call_id callId);
-    void hangupCall(pjsua_call_id callId);
+    void makeCall(const QString& number);
+    void acceptCall();
+    void hangupCall();
     void ring(pjsua_call_id callId);
 
     void emitRegStateStarted(bool status);
     void emitRegStateChanged(bool status);
-    void emitCallStateChanged(int role, int callId, int state, int status, QString remoteUri);
+    void onCallStateChanged(pj::CallInfo callInfo, const QString& remoteUri);
 
 signals:
     void regStateStarted(bool status);
     void regStateChanged(bool status);
-    void callStateChanged(int role, int callId, int state, int status, QString remoteUri);
+    void callStateChanged(pj::CallInfo callInfo, const QString& remoteUri);
 
 private:
     pj::Endpoint m_SIPEndpoint;
     pj::EpConfig m_SIPEndpointConfig;
     pj::TransportConfig m_transportConfig;
     pj::AccountConfig m_accountConfig;
-    class SIPAccount* m_SIPAccount = nullptr;
-    class SIPCall* m_SIPCall = nullptr;
+    SIPAccount* m_SIPAccount = nullptr;
+    SIPCall* m_SIPCall = nullptr;
+    pjsua_call_id m_currentCallId = PJSUA_INVALID_ID;
 };
 
 #endif // METAVOIP_H

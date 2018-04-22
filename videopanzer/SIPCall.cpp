@@ -12,16 +12,16 @@ SIPCall::~SIPCall()
 {
 }
 
-void SIPCall::onCallState(pj::OnCallStateParam &prm)
+void SIPCall::onCallState(pj::OnCallStateParam &callStateParameter)
 {
-    Q_UNUSED(prm)
-    pj::CallInfo ci = getInfo();
-    m_SIPManager->emitCallStateChanged(ci.role, ci.id, ci.state, ci.lastStatusCode, QString::fromStdString(ci.remoteUri));
+    Q_UNUSED(callStateParameter)
+    pj::CallInfo callInfo = getInfo();
+    m_SIPManager->onCallStateChanged(callInfo, QString::fromStdString(callInfo.remoteUri));
 }
 
-void SIPCall::onCallMediaState(pj::OnCallMediaStateParam &parameter)
+void SIPCall::onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParameter)
 {
-    Q_UNUSED(parameter)
+    Q_UNUSED(callMediaStateParameter)
     pj::CallInfo callInfo = getInfo();
     pj::AudDevManager& audioDevicesManager = pj::Endpoint::instance().audDevManager();
     for (auto i = 0u; i < callInfo.media.size(); ++i) {
