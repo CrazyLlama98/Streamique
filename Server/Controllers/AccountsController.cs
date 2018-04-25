@@ -26,7 +26,7 @@ namespace Server.Controllers
                 var result = await _authorizationService.LoginUserAsync(loginDto);
                 if (!result.Succeeded)
                     return BadRequest();
-                var token = _authorizationService.GenerateJwt();
+                var token = _authorizationService.GenerateJwt(loginDto.Email);
                 if (token != null)
                     return Ok(new { token });
                 return StatusCode((int) HttpStatusCode.InternalServerError);
@@ -45,7 +45,7 @@ namespace Server.Controllers
                 var resultSignIn = await _authorizationService.LoginUserAsync(new LoginDto { Email = registerDto.Email, Password = registerDto.Password });
                 if (!resultSignIn.Succeeded)
                     return BadRequest();
-                var token = _authorizationService.GenerateJwt();
+                var token = _authorizationService.GenerateJwt(registerDto.Email);
                 if (token != null)
                     return Ok(new { token });
                 return StatusCode((int)HttpStatusCode.InternalServerError);

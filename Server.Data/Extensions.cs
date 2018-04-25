@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
-using Server.Data.DbContexts;
-using System;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Server.Data.MappingsProfiles;
+using Server.Data.Interfaces;
+using Server.Data.Repositories;
 
 namespace Server.Data
 {
@@ -19,6 +21,23 @@ namespace Server.Data
                 dbContext.Database.EnsureCreated();
             }
             return host;
+        }
+
+        public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
+        {
+            services.AddAutoMapper(cfg => {
+                cfg.AddProfile(new UserMappingProfile());
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            services
+                .AddTransient(typeof(IUserRepository), typeof(UserRepository))
+                .AddTransient(typeof(ILobbyRepository), typeof(LobbyRepository))
+                .AddTransient(typeof(ILobbyJoinRequestRepository), typeof(LobbyJoinRequestRepository));
+            return services;
         }
     }
 }

@@ -1,15 +1,14 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Server.Data.DbContexts;
-using Server.Data.Models;
+using Server.Data;
 using Server.Services;
+using NSwag.AspNetCore;
+using System.Reflection;
+using NJsonSchema;
+using NSwag.SwaggerGeneration.Processors.Security;
+using NSwag;
 
 namespace Server
 {
@@ -25,34 +24,13 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UserDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("UserDatabase")));
-            services.AddIdentity<User, UserRole>()
-                .AddEntityFrameworkStores<UserDbContext>()
-                .AddDefaultTokenProviders();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
-                });
-            services.Configure<IdentityOptions>(options => {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 4;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-            });
-            services.AddServerServices();
-            services.AddMvc();
+            services.AddUserDbContext(Configuration.GetConnectionString("UserDatabase"))
+                .AddSwagger()
+                .AddJwtAuthenticationOptions(Configuration["Jwt:Issuer"], Configuration["Jwt:Key"])
+                .AddRepositories()
+                .AddServerServices()
+                .AddAutoMapperProfiles()
+                .AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +40,17 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseStaticFiles();
+            app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly, settings =>
+            {
+                settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+                settings.GeneratorSettings.DocumentProcessors.Add(new SecurityDefinitionAppender("Authorization", new SwaggerSecurityScheme
+                {
+                    Type = SwaggerSecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    In = SwaggerSecurityApiKeyLocation.Header
+                }));
+            });
             app.UseAuthentication();
             app.UseMvc();
         }

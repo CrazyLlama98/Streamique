@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -20,29 +23,34 @@ namespace Server.Services
         private SignInManager<User> _signInManager;
         private IConfiguration _configuration;
         private ILogger<AuthorizationService> _logger;
+        private IMapper _mapper;
 
-        public AuthorizationService(UserManager<User> userManager, RoleManager<UserRole> roleManager, 
-            IConfiguration configuration, ILogger<AuthorizationService> logger, SignInManager<User> signInManager)
+        public AuthorizationService(UserManager<User> userManager, RoleManager<UserRole> roleManager,
+            IConfiguration configuration, ILogger<AuthorizationService> logger, SignInManager<User> signInManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        public string GenerateJwt()
+        public string GenerateJwt(string email)
         {
             try
             {
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Sub, _userManager.FindByEmailAsync(email).Result.Id.ToString(), 
+                                                            ClaimValueTypes.Integer) };
                 var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Issuer"],
-                                                expires: DateTime.Now.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
-                                                signingCredentials: credentials);
-
+                                                    claims: claims,
+                                                    expires: DateTime.Now.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
+                                                    signingCredentials: credentials);
                 return new JwtSecurityTokenHandler().WriteToken(token);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 _logger.LogError(LoggingEvents.AuthorizationEvents.JWTGenerationError, e, "JWT could not be generated");
                 return null;
@@ -53,9 +61,10 @@ namespace Server.Services
         {
             try
             {
-                User newUser = new User { Nickname = registerDto.NickName, Email = registerDto.Email, UserName = registerDto.Email };
+                User newUser = _mapper.Map<User>(registerDto);
                 return await _userManager.CreateAsync(newUser, registerDto.Password);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 _logger.LogError(LoggingEvents.AuthorizationEvents.RegisterError, e, "Error registering user with email = {EMAIL}", registerDto.Email);
                 return null;

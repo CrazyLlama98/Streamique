@@ -12,7 +12,7 @@ namespace Server
         public static void Main(string[] args)
         {
             BuildWebHost(args)
-                .EnsureDatabaseCreated<UserDbContext>()
+                .EnsureDatabaseCreated<VideoPanzerDbContext>()
                 .Run();
         }
 

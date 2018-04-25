@@ -6,7 +6,7 @@ namespace Server.Services.Interfaces
 {
     public interface IAuthorizationService
     {
-        string GenerateJwt();
+        string GenerateJwt(string email);
         Task<IdentityResult> RegisterUserAsync(RegistrationDto registerDto);
         Task<SignInResult> LoginUserAsync(LoginDto loginDto);
         Task<bool> LogoffUserAsync();

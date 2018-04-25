@@ -10,5 +10,9 @@ namespace Server.Data.DTOs
         public string Password { get; set; }
         [Required]
         public string NickName { get; set; }
+        [StringLength(10, MinimumLength = 10), Required]
+        public string Phone { get; set; }
+        [Required]
+        public int AccountImageId { get; set; }
     }
 }
