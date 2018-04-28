@@ -1,8 +1,9 @@
-#ifndef METAVOIP_H
-#define METAVOIP_H
+#ifndef SIP_MANAGER_H
+#define SIP_MANAGER_H
 
 #include <pjsua2.hpp>
 #include <QObject>
+#include <QHash>
 
 extern "C" {
 #include <pjlib.h>
@@ -31,12 +32,12 @@ public:
     void unregisterAccount();
 
     void makeCall(const QString& number);
-    void acceptCall();
-    void hangupCall();
+    void acceptCall(pjsua_call_id callId);
+    void hangupCall(pjsua_call_id callId);
     void ring(pjsua_call_id callId);
 
-    void emitRegStateStarted(bool status);
-    void emitRegStateChanged(bool status);
+    void onRegStateStarted(bool status);
+    void onRegStateChanged(bool status);
     void onCallStateChanged(pj::CallInfo callInfo, const QString& remoteUri);
 
 signals:
@@ -46,12 +47,8 @@ signals:
 
 private:
     pj::Endpoint m_SIPEndpoint;
-    pj::EpConfig m_SIPEndpointConfig;
-    pj::TransportConfig m_transportConfig;
-    pj::AccountConfig m_accountConfig;
     SIPAccount* m_SIPAccount = nullptr;
-    SIPCall* m_SIPCall = nullptr;
-    pjsua_call_id m_currentCallId = PJSUA_INVALID_ID;
+    QHash<pjsua_call_id, SIPCall*> m_SIPCalls;
 };
 
-#endif // METAVOIP_H
+#endif // SIP_MANAGER_H

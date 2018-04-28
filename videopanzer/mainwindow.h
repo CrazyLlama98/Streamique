@@ -33,6 +33,7 @@ private:
         E_REMOTE_RING_STATE,
         E_CALLING_STATE
     } m_SIPState;
+    pjsua_call_id m_currentCallId = PJSUA_INVALID_ID;
 
     Ui::MainWindow* ui = nullptr;
     QSoundEffect ringtone, outgoingRing;

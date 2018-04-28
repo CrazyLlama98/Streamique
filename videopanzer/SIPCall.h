@@ -1,5 +1,5 @@
-#ifndef MYCALL_H
-#define MYCALL_H
+#ifndef SIP_CALL_H
+#define SIP_CALL_H
 
 #include <pjsua2.hpp>
 #include "SIPManager.h"
@@ -12,12 +12,8 @@ public:
 
     virtual void onCallState(pj::OnCallStateParam &callStateParameter);
     virtual void onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParameter);
-    virtual void onCallTransferRequest(pj::OnCallTransferRequestParam &prm);
-    virtual void onCallTransferStatus(pj::OnCallTransferStatusParam &prm);
-    virtual void onCallReplaceRequest(pj::OnCallReplaceRequestParam &prm);
-
 private:
     SIPManager* m_SIPManager = nullptr;
 };
 
-#endif // MYCALL_H
+#endif // SIP_CALL_H

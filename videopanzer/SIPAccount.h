@@ -1,5 +1,5 @@
-#ifndef MYACCOUNT_H
-#define MYACCOUNT_H
+#ifndef SIP_ACCOUNT_H
+#define SIP_ACCOUNT_H
 
 #include "SIPManager.h"
 #include <pjsua2.hpp>
@@ -18,4 +18,4 @@ private:
     SIPManager* m_SIPManager = nullptr;
 };
 
-#endif // MYACCOUNT_H
+#endif // SIP_ACCOUNT_H

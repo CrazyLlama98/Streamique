@@ -41,19 +41,3 @@ void SIPCall::onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParamete
         }
     }
 }
-
-void SIPCall::onCallTransferRequest(pj::OnCallTransferRequestParam &prm)
-{
-    Q_UNUSED(prm)
-}
-
-void SIPCall::onCallTransferStatus(pj::OnCallTransferStatusParam &prm)
-{
-    Q_UNUSED(prm)
-
-}
-
-void SIPCall::onCallReplaceRequest(pj::OnCallReplaceRequestParam &prm)
-{
-    Q_UNUSED(prm)
-}
