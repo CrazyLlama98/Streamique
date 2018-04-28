@@ -4,20 +4,26 @@ TARGET = MetaVoIP
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
         SIPManager.cpp \
         SIPAccount.cpp \
-        SIPCall.cpp
+        SIPCall.cpp \
+    VideoWidgetManager.cpp \
+    MainWindow.cpp \
+    VideoWidget.cpp
 
-HEADERS += mainwindow.h \
+HEADERS += \
         SIPManager.h \
         SIPAccount.h \
-        SIPCall.h
+        SIPCall.h \
+    VideoWidgetManager.h \
+    MainWindow.h \
+    VideoWidget.h
 
 FORMS   += mainwindow.ui
 
 
 unix {
+QT += x11extras
 INCLUDEPATH += $$PWD/pjproject/pjsip/include \
                $$PWD/pjproject/pjlib/include \
                $$PWD/pjproject/pjlib-util/include \
@@ -59,7 +65,8 @@ INCLUDEPATH += $$PWD/pjproject/pjsip/include \
     -lavutil \
     -lswscale \
     -lSDL2 \
-    -lv4l2
+    -lv4l2 \
+    -lX11
 }
 
 RESOURCES += \

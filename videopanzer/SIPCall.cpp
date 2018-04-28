@@ -16,7 +16,7 @@ void SIPCall::onCallState(pj::OnCallStateParam &callStateParameter)
 {
     Q_UNUSED(callStateParameter)
     pj::CallInfo callInfo = getInfo();
-    m_SIPManager->onCallStateChanged(callInfo, QString::fromStdString(callInfo.remoteUri));
+    m_SIPManager->onCallStateChanged(callInfo);
 }
 
 void SIPCall::onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParameter)
@@ -35,9 +35,10 @@ void SIPCall::onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParamete
             captureMedia->adjustTxLevel(1.0f);
             captureMedia->startTransmit(*audioMedia);
         }
-        else if (callInfo.media[i].type == PJMEDIA_TYPE_VIDEO) {
+        else if (callInfo.media[i].type == PJMEDIA_TYPE_VIDEO && (callInfo.media[i].dir & PJMEDIA_DIR_DECODING)) {
             auto& videoWindow = callInfo.media[i].videoWindow;
             videoWindow.Show(true);
         }
     }
+    m_SIPManager->onCallMediaStateChanged(callInfo);
 }

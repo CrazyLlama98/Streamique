@@ -14,13 +14,46 @@
    <string>MetaVoIP</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <widget class="QFrame" name="videoWidgetHolder">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>471</width>
+      <height>391</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <layout class="QVBoxLayout" name="holderLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+    </layout>
+   </widget>
    <widget class="QLineEdit" name="number">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>430</y>
-      <width>427</width>
-      <height>31</height>
+      <x>30</x>
+      <y>440</y>
+      <width>401</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="font">
@@ -44,10 +77,10 @@
    <widget class="QPushButton" name="callButton">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>360</y>
-      <width>101</width>
-      <height>51</height>
+      <x>30</x>
+      <y>400</y>
+      <width>121</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -57,10 +90,10 @@
    <widget class="QPushButton" name="hangupButton">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>360</y>
-      <width>101</width>
-      <height>51</height>
+      <x>310</x>
+      <y>400</y>
+      <width>121</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">

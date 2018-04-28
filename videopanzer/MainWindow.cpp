@@ -1,18 +1,22 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "SIPManager.h"
+#include "VideoWidgetManager.h"
 
 #include <QFile>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_videoWidgetManager(new VideoWidgetManager(this))
 {
     ui->setupUi(this);
     ui->number->setFont(QFont("Helvetica", 12, QFont::Bold));
     connect(ui->callButton, &QPushButton::clicked, this, &MainWindow::onCall);
     connect(ui->hangupButton, &QPushButton::clicked, this, &MainWindow::onHangup);
+    connect(m_videoWidgetManager, &VideoWidgetManager::newVideoWidget, this, &MainWindow::onNewVideoWidget);
+    connect(m_videoWidgetManager, &VideoWidgetManager::aboutToDeleteVideoWidget, this, &MainWindow::onAboutToDeleteVideoWidget);
 
     outgoingRing.setSource(QUrl::fromLocalFile(":/sounds/ring.wav"));
     outgoingRing.setLoopCount(QSoundEffect::Infinite);
@@ -26,6 +30,7 @@ void MainWindow::registerSIP()
 {
     m_SIPManager = new SIPManager(PJSIP_TRANSPORT_UDP, 5061);
     m_SIPManager->connect(m_SIPManager, &SIPManager::callStateChanged, this, &MainWindow::onCallStateChanged);
+    m_SIPManager->connect(m_SIPManager, &SIPManager::callMediaStateChanged, m_videoWidgetManager, &VideoWidgetManager::onCallMediaStateChanged);
     m_currentAccountId = m_SIPManager->createAccount("sip:100@192.168.1.20", "sip:192.168.1.20", "100", "1234");
     m_SIPManager->registerAccount(m_currentAccountId);
 }
@@ -51,7 +56,7 @@ void MainWindow::onHangup()
     //ui->info->clear();
 }
 
-void MainWindow::onCallStateChanged(pj::CallInfo callInfo, const QString& remoteUri)
+void MainWindow::onCallStateChanged(const pj::CallInfo &callInfo)
 {
     m_currentCallId = callInfo.id;
     if(callInfo.state == PJSIP_INV_STATE_EARLY && callInfo.lastStatusCode == PJSIP_SC_RINGING)
@@ -81,6 +86,17 @@ void MainWindow::onCallStateChanged(pj::CallInfo callInfo, const QString& remote
         ringtone.stop();
         outgoingRing.stop();
     }
+}
+
+void MainWindow::onNewVideoWidget(QWidget* videoWidget)
+{
+    ui->holderLayout->addWidget(videoWidget);
+    videoWidget->show();
+}
+
+void MainWindow::onAboutToDeleteVideoWidget(QWidget *videoWidget)
+{
+    ui->holderLayout->removeWidget(videoWidget);
 }
 
 MainWindow::~MainWindow()

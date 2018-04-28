@@ -1,19 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <pjsua2.hpp>
 #include <QMainWindow>
 #include <QSoundEffect>
 
-#include "SIPManager.h"
-
-namespace Ui {
-class MainWindow;
+namespace Ui
+{
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     explicit MainWindow(QWidget* parent = nullptr);
     virtual ~MainWindow() override;
@@ -21,7 +20,9 @@ public:
 private slots:
     void onCall();
     void onHangup();
-    void onCallStateChanged(pj::CallInfo callInfo, const QString &remoteUri);
+    void onCallStateChanged(const pj::CallInfo& callInfo);
+    void onNewVideoWidget(QWidget* videoWidget);
+    void onAboutToDeleteVideoWidget(QWidget* videoWidget);
 
 private:
     void registerSIP();
@@ -33,12 +34,16 @@ private:
         E_REMOTE_RING_STATE,
         E_CALLING_STATE
     } m_SIPState;
+
     pjsua_acc_id m_currentAccountId = PJSUA_INVALID_ID;
     pjsua_call_id m_currentCallId = PJSUA_INVALID_ID;
 
     Ui::MainWindow* ui = nullptr;
-    QSoundEffect ringtone, outgoingRing;
     class SIPManager* m_SIPManager = nullptr;
+    class VideoWidgetManager* m_videoWidgetManager = nullptr;
+
+    QSoundEffect ringtone;
+    QSoundEffect outgoingRing;
 };
 
 #endif // MAINWINDOW_H

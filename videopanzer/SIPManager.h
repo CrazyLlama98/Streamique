@@ -38,12 +38,14 @@ public:
 
     void onRegStateStarted(bool status);
     void onRegStateChanged(bool status);
-    void onCallStateChanged(pj::CallInfo callInfo, const QString& remoteUri);
+    void onCallStateChanged(const pj::CallInfo& callInfo);
+    void onCallMediaStateChanged(const pj::CallInfo& callInfo);
 
 signals:
     void regStateStarted(bool status);
     void regStateChanged(bool status);
-    void callStateChanged(pj::CallInfo callInfo, const QString& remoteUri);
+    void callStateChanged(const pj::CallInfo& callInfo);
+    void callMediaStateChanged(const pj::CallInfo& callInfo);
 
 private:
     pj::Endpoint m_SIPEndpoint;

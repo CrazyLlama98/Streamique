@@ -1,7 +1,5 @@
 #include "SIPAccount.h"
 #include "SIPCall.h"
-
-#include <QString>
 #include <QDebug>
 
 SIPAccount::SIPAccount(SIPManager* _SIPManager) :

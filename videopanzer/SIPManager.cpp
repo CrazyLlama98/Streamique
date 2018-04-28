@@ -175,7 +175,7 @@ void SIPManager::onRegStateChanged(bool status)
     emit regStateChanged(status);
 }
 
-void SIPManager::onCallStateChanged(pj::CallInfo callInfo, const QString &remoteUri)
+void SIPManager::onCallStateChanged(const pj::CallInfo& callInfo)
 {
     if (callInfo.state == PJSIP_INV_STATE_DISCONNECTED) {
         if (auto disconnectedSIPCall = pj::Call::lookup(callInfo.id)) {
@@ -186,5 +186,10 @@ void SIPManager::onCallStateChanged(pj::CallInfo callInfo, const QString &remote
             qDebug() << "Cannot delete call with unrecognized id: " << callInfo.id;
         }
     }
-    emit callStateChanged(callInfo, remoteUri);
+    emit callStateChanged(callInfo);
+}
+
+void SIPManager::onCallMediaStateChanged(const pj::CallInfo &callInfo)
+{
+    emit callMediaStateChanged(callInfo);
 }
