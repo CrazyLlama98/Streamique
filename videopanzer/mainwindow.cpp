@@ -26,7 +26,8 @@ void MainWindow::registerSIP()
 {
     m_SIPManager = new SIPManager(PJSIP_TRANSPORT_UDP, 5061);
     m_SIPManager->connect(m_SIPManager, &SIPManager::callStateChanged, this, &MainWindow::onCallStateChanged);
-    m_SIPManager->createAccount("sip:100@192.168.1.20", "sip:192.168.1.20", "100", "1234");
+    m_currentAccountId = m_SIPManager->createAccount("sip:100@192.168.1.20", "sip:192.168.1.20", "100", "1234");
+    m_SIPManager->registerAccount(m_currentAccountId);
 }
 
 void MainWindow::onCall()
@@ -37,7 +38,7 @@ void MainWindow::onCall()
         ringtone.stop();
     }
     else if(m_SIPState != SIP_STATE::E_LOCAL_RING_STATE && !ui->number->text().isEmpty()) {
-        m_SIPManager->makeCall("sip:"+ ui->number->text() + "@" + "192.168.1.20");
+        m_SIPManager->makeCall(m_currentAccountId, "sip:"+ ui->number->text() + "@" + "192.168.1.20");
         ui->number->clear();
     }
 }

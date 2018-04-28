@@ -32,62 +32,76 @@ SIPManager::SIPManager(pjsip_transport_type_e transportType, quint16 port, QObje
 SIPManager::~SIPManager()
 {
     try {
-        delete m_SIPAccount;
+        m_SIPEndpoint.libDestroy();
     } catch (pj::Error &error) {
         qDebug() << "PJLIB deleting failed: " << error.info().c_str();
     }
 }
 
-void SIPManager::createAccount(const QString &idUri, const QString &registrarUri, const QString &user, const QString &password)
+pjsua_acc_id SIPManager::createAccount(const QString &idUri, const QString &registrarUri, const QString &user, const QString &password)
 {
     try {
         pj::AccountConfig SIPAccountConfig;
         SIPAccountConfig.idUri = idUri.toStdString();
         SIPAccountConfig.regConfig.registrarUri = registrarUri.toStdString();
-        pj::AuthCredInfo credentials("digest", "*", user.toStdString(), 0, password.toStdString());
-        SIPAccountConfig.sipConfig.authCreds.push_back(credentials);
+        SIPAccountConfig.regConfig.registerOnAdd = false;
+        SIPAccountConfig.sipConfig.authCreds.push_back({"digest", "*", user.toStdString(), 0, password.toStdString()});
         SIPAccountConfig.callConfig.timerMinSESec = 90;
         SIPAccountConfig.callConfig.timerSessExpiresSec = 1800;
         SIPAccountConfig.videoConfig.autoTransmitOutgoing = true;
-        m_SIPAccount = new SIPAccount(this);
-        m_SIPAccount->create(SIPAccountConfig);
-        qDebug() << "Account creation successful!";
+        auto newSIPAccount = new SIPAccount(this);
+        newSIPAccount->create(SIPAccountConfig);
+        qDebug() << "Created account with id: " << newSIPAccount->getId();
+        return newSIPAccount->getId();
 
     } catch(pj::Error& error) {
         qDebug() << "Account creation error: " << error.info().c_str();
+        return PJSUA_INVALID_ID;
     }
 }
 
-void SIPManager::registerAccount()
+void SIPManager::registerAccount(pjsua_acc_id accountId)
 {
     try {
-        m_SIPAccount->setRegistration(true);
-        qDebug() << "Registered account successfully!";
-
+        if (auto registeredSIPAccount = pj::Account::lookup(accountId)) {
+            registeredSIPAccount->setRegistration(true);
+            qDebug() << "Registered account with id: " << accountId;
+        }
+        else {
+            qDebug() << "Cannot register account with id: " << accountId;
+        }
     } catch(pj::Error& error) {
         qDebug() << "Register error: " << error.info().c_str();
     }
 }
 
-void SIPManager::unregisterAccount()
+void SIPManager::unregisterAccount(pjsua_acc_id accountId)
 {
     try {
-        m_SIPAccount->setRegistration(false);
-        qDebug() << "Unregistered account successfully!";
-
+        if (auto unregisteredSIPAccount = pj::Account::lookup(accountId)) {
+            unregisteredSIPAccount->setRegistration(false);
+            qDebug() << "Unregistered account with id: " << accountId;
+        }
+        else {
+            qDebug() << "Cannot unregister account with id: " << accountId;
+        }
     } catch(pj::Error& error) {
         qDebug() << "Unregister error: " << error.info().c_str();
     }
 }
 
-void SIPManager::makeCall(const QString &number)
+void SIPManager::makeCall(pjsua_acc_id accountId, const QString &number)
 {
     try {
-        auto newSIPCall = new SIPCall(this, *m_SIPAccount);
-        pj::CallOpParam callOperationParameter(true);
-        newSIPCall->makeCall(number.toStdString(), callOperationParameter);
-        m_SIPCalls.insert(newSIPCall->getId(), newSIPCall);
-        qDebug() << "Making call with id: " << newSIPCall->getId();
+        if (auto callingSIPAccount = pj::Account::lookup(accountId)) {
+            auto newSIPCall = new SIPCall(this, *callingSIPAccount);
+            pj::CallOpParam callOperationParameter(true);
+            newSIPCall->makeCall(number.toStdString(), callOperationParameter);
+            qDebug() << "Making call with id: " << newSIPCall->getId();
+        }
+        else {
+            qDebug() << "Cannot make call from account with unrecognized id: " << accountId;
+        }
     } catch(pj::Error& error) {
         qDebug() << "Call could not be made: " << error.info().c_str();
     }
@@ -96,7 +110,7 @@ void SIPManager::makeCall(const QString &number)
 void SIPManager::acceptCall(pjsua_call_id callId)
 {
     try {
-        if (auto incomingSIPCall = m_SIPCalls.value(callId, nullptr))
+        if (auto incomingSIPCall = pj::Call::lookup(callId))
         {
             pj::CallOpParam callOperationParameter;
             callOperationParameter.statusCode = PJSIP_SC_OK;
@@ -114,7 +128,7 @@ void SIPManager::acceptCall(pjsua_call_id callId)
 void SIPManager::hangupCall(pjsua_call_id callId)
 {
     try {
-        if (auto hangupSIPCall = m_SIPCalls.value(callId, nullptr)) {
+        if (auto hangupSIPCall = pj::Call::lookup(callId)) {
             pj::CallInfo callInfo = hangupSIPCall->getInfo();
             pj::CallOpParam callOperationParameter;
             if(callInfo.lastStatusCode == PJSIP_SC_RINGING) {
@@ -134,14 +148,18 @@ void SIPManager::hangupCall(pjsua_call_id callId)
     }
 }
 
-void SIPManager::ring(pjsua_call_id callId)
+void SIPManager::ring(pjsua_acc_id accountId, pjsua_call_id callId)
 {
     try {
-        auto incomingSIPCall = new SIPCall(this, *m_SIPAccount, callId);
-        pj::CallOpParam callOperationParameter;
-        callOperationParameter.statusCode = PJSIP_SC_RINGING;
-        incomingSIPCall->answer(callOperationParameter);
-        m_SIPCalls.insert(callId, incomingSIPCall);
+        if (auto incomingSIPAccount = pj::Account::lookup(accountId)) {
+            auto incomingSIPCall = new SIPCall(this, *incomingSIPAccount, callId);
+            pj::CallOpParam callOperationParameter;
+            callOperationParameter.statusCode = PJSIP_SC_RINGING;
+            incomingSIPCall->answer(callOperationParameter);
+        }
+        else {
+            qDebug() << "Cannot ring call with unrecognized id: " << callId;
+        }
     } catch(pj::Error& error) {
         qDebug() << "Ringing failed: " << error.info().c_str();
     }
@@ -160,10 +178,12 @@ void SIPManager::onRegStateChanged(bool status)
 void SIPManager::onCallStateChanged(pj::CallInfo callInfo, const QString &remoteUri)
 {
     if (callInfo.state == PJSIP_INV_STATE_DISCONNECTED) {
-        qDebug() << "Deleting call with id: " << callInfo.id << " as result of disconnection!";
-        if (auto disconnectedSIPCall = m_SIPCalls.value(callInfo.id, nullptr)) {
+        if (auto disconnectedSIPCall = pj::Call::lookup(callInfo.id)) {
+            qDebug() << "Deleting call with id: " << callInfo.id << " as result of disconnection!";
             delete disconnectedSIPCall;
-            m_SIPCalls.remove(callInfo.id);
+        }
+        else {
+            qDebug() << "Cannot delete call with unrecognized id: " << callInfo.id;
         }
     }
     emit callStateChanged(callInfo, remoteUri);

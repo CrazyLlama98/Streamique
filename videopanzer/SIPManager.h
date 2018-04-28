@@ -27,14 +27,14 @@ public:
     explicit SIPManager(pjsip_transport_type_e transportType, quint16 port, QObject* parent = nullptr);
     virtual ~SIPManager() override;
 
-    void createAccount(const QString& idUri, const QString& registrarUri, const QString& user, const QString& password);
-    void registerAccount();
-    void unregisterAccount();
+    pjsua_acc_id createAccount(const QString& idUri, const QString& registrarUri, const QString& user, const QString& password);
+    void registerAccount(pjsua_acc_id accountId);
+    void unregisterAccount(pjsua_acc_id accountId);
 
-    void makeCall(const QString& number);
+    void makeCall(pjsua_acc_id accountId, const QString& number);
     void acceptCall(pjsua_call_id callId);
     void hangupCall(pjsua_call_id callId);
-    void ring(pjsua_call_id callId);
+    void ring(pjsua_acc_id accountId, pjsua_call_id callId);
 
     void onRegStateStarted(bool status);
     void onRegStateChanged(bool status);
@@ -47,8 +47,6 @@ signals:
 
 private:
     pj::Endpoint m_SIPEndpoint;
-    SIPAccount* m_SIPAccount = nullptr;
-    QHash<pjsua_call_id, SIPCall*> m_SIPCalls;
 };
 
 #endif // SIP_MANAGER_H

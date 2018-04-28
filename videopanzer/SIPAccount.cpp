@@ -32,6 +32,6 @@ void SIPAccount::onRegStarted(pj::OnRegStartedParam& registerStartedParameter)
 void SIPAccount::onIncomingCall(pj::OnIncomingCallParam& incomingCallParamater)
 {
     qDebug() << "Incoming call with id: " << incomingCallParamater.callId;
-    m_SIPManager->ring(incomingCallParamater.callId);
+    m_SIPManager->ring(getId(), incomingCallParamater.callId);
 }
 
