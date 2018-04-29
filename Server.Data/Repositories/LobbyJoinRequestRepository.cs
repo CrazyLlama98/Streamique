@@ -13,6 +13,11 @@ namespace Server.Data.Repositories
             : base(context)
         { }
 
+        public LobbyJoinRequest GetLobbyJoinRequestLobbyInformation(int id)
+        {
+            return GetSet(true).FirstOrDefault(t => t.Id == id);
+        }
+
         public IEnumerable<LobbyJoinRequest> GetLobbyJoinRequestsByLobbyId(int id)
         {
             return GetSet().Where(t => t.LobbyId == id).AsEnumerable();
@@ -25,7 +30,9 @@ namespace Server.Data.Repositories
 
         protected override IQueryable<LobbyJoinRequest> GetSet(bool useJoins = false)
         {
-            return Context.Set<LobbyJoinRequest>().Include(t => t.User);
+            if (!useJoins)
+                return Context.Set<LobbyJoinRequest>().Include(t => t.User);
+            return Context.Set<LobbyJoinRequest>().Include(t => t.User).Include(t => t.Lobby);
         }
     }
 }

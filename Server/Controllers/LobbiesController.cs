@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data.DTOs;
 using Server.Services.Interfaces;
@@ -16,10 +14,14 @@ namespace Server.Controllers
     public class LobbiesController : Controller
     {
         private ILobbyService _lobbyService;
+        private Services.Interfaces.IAuthorizationService _authorizationService;
 
-        public LobbiesController(ILobbyService lobbyService)
+        public LobbiesController(
+            ILobbyService lobbyService,
+            Services.Interfaces.IAuthorizationService authorizationService)
         {
             _lobbyService = lobbyService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -50,12 +52,16 @@ namespace Server.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                    var lobbyResult = _lobbyService.CreateLobby(newLobby, userId);
-                    if (lobbyResult != null)
+                    try
                     {
-                        return CreatedAtRoute("GetLobby", new { id = lobbyResult.Id }, lobbyResult);
+                        var userId = _authorizationService.GetUserId(User);
+                        var lobbyResult = _lobbyService.CreateLobby(newLobby, userId);
+                        if (lobbyResult != null)
+                            return CreatedAtRoute("GetLobby", new { id = lobbyResult.Id }, lobbyResult);
                     }
+                    catch
+                    { }
+                    return Unauthorized();
                 }
                 return BadRequest();
             }
@@ -71,9 +77,13 @@ namespace Server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                if (_lobbyService.UpdateLobby(lobby, id, userId))
-                    return NoContent();
+                try
+                {
+                    var userId = _authorizationService.GetUserId(User);
+                    if (_lobbyService.UpdateLobby(lobby, id, userId))
+                        return NoContent();
+                }
+                catch { }
                 return Unauthorized();
             }
             return BadRequest();
@@ -83,10 +93,17 @@ namespace Server.Controllers
         [ProducesResponseType(204)]
         public IActionResult DeleteLobby(int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            if (_lobbyService.DeleteLobby(id, userId))
-                return NoContent();
-            return Unauthorized();
+            try
+            {
+                var userId = _authorizationService.GetUserId(User);
+                if (_lobbyService.DeleteLobby(id, userId))
+                    return NoContent();
+                return Unauthorized();
+            }
+            catch
+            {
+                return Unauthorized();
+            }
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Server.Data.Interfaces
     {
         IEnumerable<LobbyJoinRequest> GetLobbyJoinRequestsByLobbyId(int id);
         IEnumerable<LobbyJoinRequest> GetLobbyJoinRequestsByUserId(int id);
+        LobbyJoinRequest GetLobbyJoinRequestLobbyInformation(int id);
     }
 }

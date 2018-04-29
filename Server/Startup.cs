@@ -24,9 +24,10 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddUserDbContext(Configuration.GetConnectionString("UserDatabase"))
+            services
                 .AddSwagger()
                 .AddJwtAuthenticationOptions(Configuration["Jwt:Issuer"], Configuration["Jwt:Key"])
+                .AddUserDbContext(Configuration.GetConnectionString("UserDatabase"))
                 .AddRepositories()
                 .AddServerServices()
                 .AddAutoMapperProfiles()

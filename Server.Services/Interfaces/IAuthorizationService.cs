@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Server.Data.DTOs;
 
@@ -10,5 +11,6 @@ namespace Server.Services.Interfaces
         Task<IdentityResult> RegisterUserAsync(RegistrationDto registerDto);
         Task<SignInResult> LoginUserAsync(LoginDto loginDto);
         Task<bool> LogoffUserAsync();
+        int GetUserId(ClaimsPrincipal User);
     }
 }

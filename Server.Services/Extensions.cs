@@ -7,6 +7,7 @@ using Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Server.Services
 {
@@ -17,7 +18,8 @@ namespace Server.Services
             services
                 .AddTransient(typeof(IAuthorizationService), typeof(AuthorizationService))
                 .AddTransient(typeof(IUserService), typeof(UserService))
-                .AddTransient(typeof(ILobbyService), typeof(LobbyService));
+                .AddTransient(typeof(ILobbyService), typeof(LobbyService))
+                .AddTransient(typeof(ILobbyJoinRequestService), typeof(LobbyJoinRequestService));
             return services;
         }
 
@@ -25,7 +27,10 @@ namespace Server.Services
         {
             services.AddDbContext<VideoPanzerDbContext>(options =>
                 options.UseSqlServer(connectionString));
-            services.AddIdentity<User, UserRole>()
+            services.AddIdentity<User, UserRole>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                })
                 .AddEntityFrameworkStores<VideoPanzerDbContext>()
                 .AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options => {
@@ -40,7 +45,8 @@ namespace Server.Services
 
         public static IServiceCollection AddJwtAuthenticationOptions(this IServiceCollection services, string validIssuer, string key)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -50,8 +56,9 @@ namespace Server.Services
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = validIssuer,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                     };
+                    options.RequireHttpsMetadata = false;
                 });
             return services;
         }

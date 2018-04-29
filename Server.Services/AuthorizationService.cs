@@ -42,9 +42,9 @@ namespace Server.Services
             {
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Sub, _userManager.FindByEmailAsync(email).Result.Id.ToString(), 
-                                                            ClaimValueTypes.Integer) };
-                var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Issuer"],
+                var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Sub, _userManager.FindByEmailAsync(email).Result.Id.ToString()) };
+                var token = new JwtSecurityToken(audience: _configuration["Jwt:Issuer"], 
+                                                    issuer: _configuration["Jwt:Issuer"],
                                                     claims: claims,
                                                     expires: DateTime.Now.AddMinutes(int.Parse(_configuration["Jwt:ExpirationMinutes"])),
                                                     signingCredentials: credentials);
@@ -75,7 +75,7 @@ namespace Server.Services
         {
             try
             {
-                return await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
+                return await _signInManager.CheckPasswordSignInAsync(await _userManager.FindByEmailAsync(loginDto.Email), loginDto.Password, false);
             }
             catch (Exception e)
             {
@@ -96,6 +96,11 @@ namespace Server.Services
                 _logger.LogError(LoggingEvents.AuthorizationEvents.LogoffError, e, "Error on log off");
                 return false;
             }
+        }
+
+        public int GetUserId(ClaimsPrincipal User)
+        {
+            return int.Parse(_userManager.GetUserId(User));
         }
     }
 }

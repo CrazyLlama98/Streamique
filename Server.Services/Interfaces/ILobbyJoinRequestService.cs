@@ -8,7 +8,8 @@ namespace Server.Services.Interfaces
     {
         IEnumerable<LobbyJoinRequestDto> GetLobbyJoinRequestsByLobbyId(int id);
         IEnumerable<LobbyJoinRequestDto> GetLobbyJoinRequestsByUserId(int id);
-        LobbyJoinRequestDto CreateLobbyJoinRequest();
-        bool DeleteLobbyJoinRequest(int id);
+        LobbyJoinRequestDto CreateLobbyJoinRequest(int lobbyId, int userId);
+        bool DeleteLobbyJoinRequest(int id, int userId);
+        bool AcceptLobbyJoinRequest(int id, int userId);
     }
 }

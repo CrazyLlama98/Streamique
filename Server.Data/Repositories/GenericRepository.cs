@@ -48,7 +48,7 @@ namespace Server.Data.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return GetSet().AsEnumerable();
+            return GetSet().AsNoTracking().AsEnumerable();
         }
 
         public void SaveChanges()
@@ -63,7 +63,7 @@ namespace Server.Data.Repositories
 
         public IEnumerable<T> Where(Expression<Func<T, bool>> predicate)
         {
-            return GetSet().Where(predicate).AsEnumerable();
+            return GetSet().AsNoTracking().Where(predicate).AsEnumerable();
         }
 
         protected virtual IQueryable<T> GetSet(bool useJoins = false)

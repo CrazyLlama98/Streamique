@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Server.Data.Models;
 
@@ -20,16 +21,20 @@ namespace Server.Data.DbContexts
                 .WithOne()
                 .HasForeignKey(typeof(Lobby), "HostId");
             builder.Entity<Lobby>()
-                .Property(t => t.DateCreated)
-                .HasDefaultValueSql("GETDATE()");
-            builder.Entity<Lobby>()
                 .HasMany(t => t.JoinRequests)
-                .WithOne()
+                .WithOne(t => t.Lobby)
                 .HasForeignKey(t => t.LobbyId);
             builder.Entity<User>()
                 .HasMany(t => t.Lobbies)
                 .WithOne(t => t.Host)
                 .HasForeignKey(t => t.HostId);
+            builder.Entity<LobbyJoinRequest>()
+                .HasIndex(t => new { t.LobbyId, t.UserId })
+                .IsUnique();
+            builder.Entity<LobbyJoinRequest>()
+                .Property(t => t.DateCreated)
+                .HasDefaultValue(DateTime.Now)
+                .ValueGeneratedOnAdd().Metadata.BeforeSaveBehavior = Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore;
         }
     }
 }

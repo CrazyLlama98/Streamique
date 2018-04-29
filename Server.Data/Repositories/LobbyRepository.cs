@@ -32,7 +32,7 @@ namespace Server.Data.Repositories
         {
             if (!useJoins)
                 return Context.Set<Lobby>().Include(t => t.Host);
-            return Context.Set<Lobby>().Include(t => t.Host).Include(t => t.JoinRequests);
+            return Context.Set<Lobby>().Include(t => t.Host).Include(t => t.JoinRequests).ThenInclude(t => t.User);
         }
     }
 }
