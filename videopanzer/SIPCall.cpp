@@ -35,10 +35,6 @@ void SIPCall::onCallMediaState(pj::OnCallMediaStateParam &callMediaStateParamete
             captureMedia->adjustTxLevel(1.0f);
             captureMedia->startTransmit(*audioMedia);
         }
-        else if (callInfo.media[i].type == PJMEDIA_TYPE_VIDEO && (callInfo.media[i].dir & PJMEDIA_DIR_DECODING)) {
-            auto& videoWindow = callInfo.media[i].videoWindow;
-            videoWindow.Show(true);
-        }
     }
     m_SIPManager->onCallMediaStateChanged(callInfo);
 }

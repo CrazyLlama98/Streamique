@@ -1,7 +1,5 @@
 #include "VideoWidget.h"
 #include <QEvent>
-#include <QDebug>
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <QX11Info>
@@ -22,18 +20,19 @@ bool VideoWidget::event(QEvent* event)
     switch(event->type()) {
 
     case QEvent::Resize:
-    {
         XResizeWindow(QX11Info::display(), (Window)m_windowHandle.window, width(), height());
-    } break;
+        break;
 
     case QEvent::ParentChange:
-    {
-        Window parent = (Window)winId();
-        XReparentWindow(QX11Info::display(), (Window)m_windowHandle.window, parent, 0, 0);
-    } break;
+        XReparentWindow(QX11Info::display(), (Window)m_windowHandle.window, (Window)winId(), 0, 0);
+        break;
+    case QEvent::Show:
+        XMapRaised(QX11Info::display(), (Window)m_windowHandle.window);
+        break;
+    case QEvent::Hide:
+        XUnmapWindow(QX11Info::display(), (Window)m_windowHandle.window);
     default:
-    {
-    } break;
+        break;
     }
     return QWidget::event(event);
 }
