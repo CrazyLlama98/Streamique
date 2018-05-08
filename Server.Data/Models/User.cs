@@ -12,5 +12,6 @@ namespace Server.Data.Models
         [Required]
         public string AccountImageUrl { get; set; }
         public IEnumerable<Lobby> Lobbies { get; set; }
+        public IEnumerable<Message> Messages { get; set; }
     }
 }

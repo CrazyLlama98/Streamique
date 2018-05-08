@@ -16,52 +16,52 @@ namespace Server.Data.Repositories
             Context = context;
         }
 
-        public void Add(T entry)
+        public virtual void Add(T entry)
         {
             Context.Set<T>().Add(entry);
         }
 
-        public void AddRange(IEnumerable<T> entries)
+        public virtual void AddRange(IEnumerable<T> entries)
         {
             Context.Set<T>().AddRange(entries);
         }
 
-        public void Delete(T entry)
+        public virtual void Delete(T entry)
         {
             Context.Set<T>().Remove(entry);
         }
 
-        public void DeleteRange(IEnumerable<T> entries)
+        public virtual void DeleteRange(IEnumerable<T> entries)
         {
             Context.Set<T>().RemoveRange(entries);
         }
 
-        public T Find(int id)
+        public virtual T Find(int id)
         {
             return Context.Set<T>().Find(id);
         }
 
-        public T FirstOrDefault(Expression<Func<T, bool>> predicate)
+        public virtual T FirstOrDefault(Expression<Func<T, bool>> predicate)
         {
             return GetSet().FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             return GetSet().AsNoTracking().AsEnumerable();
         }
 
-        public void SaveChanges()
-        {
+        public virtual void SaveChanges()
+        { 
             Context.SaveChanges();
         }
 
-        public void Update(T entry)
+        public virtual void Update(T entry)
         {
             Context.Set<T>().Update(entry);
         }
 
-        public IEnumerable<T> Where(Expression<Func<T, bool>> predicate)
+        public virtual IEnumerable<T> Where(Expression<Func<T, bool>> predicate)
         {
             return GetSet().AsNoTracking().Where(predicate).AsEnumerable();
         }

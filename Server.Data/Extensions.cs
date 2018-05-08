@@ -5,6 +5,7 @@ using AutoMapper;
 using Server.Data.MappingsProfiles;
 using Server.Data.Interfaces;
 using Server.Data.Repositories;
+using Server.Data.MappingProfiles;
 
 namespace Server.Data
 {
@@ -27,6 +28,8 @@ namespace Server.Data
         {
             services.AddAutoMapper(cfg => {
                 cfg.AddProfile(new UserMappingProfile());
+                cfg.AddProfile(new LobbyMappingProfile());
+                cfg.AddProfile(new MessageMappingProfile());
             });
             return services;
         }
@@ -36,7 +39,8 @@ namespace Server.Data
             services
                 .AddTransient(typeof(IUserRepository), typeof(UserRepository))
                 .AddTransient(typeof(ILobbyRepository), typeof(LobbyRepository))
-                .AddTransient(typeof(ILobbyJoinRequestRepository), typeof(LobbyJoinRequestRepository));
+                .AddTransient(typeof(ILobbyJoinRequestRepository), typeof(LobbyJoinRequestRepository))
+                .AddTransient(typeof(IMessageRepository), typeof(MessageRepository));
             return services;
         }
     }

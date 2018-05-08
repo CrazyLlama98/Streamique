@@ -11,5 +11,6 @@ namespace Server.Data.Models
         public int? HostId { get; set; }
         public DateTime DateCreated { get; set; }
         public IEnumerable<LobbyJoinRequest> JoinRequests { get; set; }
+        public IEnumerable<Message> Messages { get; set; }
     }
 }

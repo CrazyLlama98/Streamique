@@ -19,7 +19,8 @@ namespace Server.Services
                 .AddTransient(typeof(IAuthorizationService), typeof(AuthorizationService))
                 .AddTransient(typeof(IUserService), typeof(UserService))
                 .AddTransient(typeof(ILobbyService), typeof(LobbyService))
-                .AddTransient(typeof(ILobbyJoinRequestService), typeof(LobbyJoinRequestService));
+                .AddTransient(typeof(ILobbyJoinRequestService), typeof(LobbyJoinRequestService))
+                .AddTransient(typeof(IMessageService), typeof(MessageService));
             return services;
         }
 

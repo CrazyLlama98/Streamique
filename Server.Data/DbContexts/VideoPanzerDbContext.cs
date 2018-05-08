@@ -12,6 +12,8 @@ namespace Server.Data.DbContexts
         { }
 
         public DbSet<Lobby> Lobbies { get; set; }
+        public DbSet<LobbyJoinRequest> LobbyJoinRequests { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,6 +37,14 @@ namespace Server.Data.DbContexts
                 .Property(t => t.DateCreated)
                 .HasDefaultValue(DateTime.Now)
                 .ValueGeneratedOnAdd().Metadata.BeforeSaveBehavior = Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore;
+            builder.Entity<User>()
+                .HasMany(t => t.Messages)
+                .WithOne(t => t.Sender)
+                .HasForeignKey(t => t.SenderId);
+            builder.Entity<Lobby>()
+                .HasMany(t => t.Messages)
+                .WithOne(t => t.Lobby)
+                .HasForeignKey(t => t.LobbyId);
         }
     }
 }

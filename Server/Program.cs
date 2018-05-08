@@ -23,7 +23,7 @@ namespace Server
                     .ReadFrom.Configuration(hostingContext.Configuration)
                     .Enrich.FromLogContext()
                     .WriteTo.Console()
-                    .WriteTo.File(@"D:\home\LogFiles\Application\myapp.txt",
+                    .WriteTo.File(@"D:\home\LogFiles\http\RawLogs\log-{Date}.txt",
                                     fileSizeLimitBytes: 1_000_000,
                                     rollOnFileSizeLimit: true,
                                     shared: true,

@@ -14,10 +14,14 @@ namespace Server.Controllers
     public class UsersController : Controller
     {
         private IUserService _userService;
+        private Services.Interfaces.IAuthorizationService _authorizationService;
 
-        public UsersController(IUserService userService)
+        public UsersController(
+            IUserService userService,
+            Services.Interfaces.IAuthorizationService authorizationService)
         {
             _userService = userService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -52,6 +56,16 @@ namespace Server.Controllers
             if (user == null)
                 return NotFound();
             return Ok(user);
+        }
+
+        [HttpGet("currentUser")]
+        [ProducesResponseType(200, Type = typeof(UserDto))]
+        public IActionResult GetCurrentUser()
+        {
+            var userId = _authorizationService.GetUserId(User);
+            if (userId == 0)
+                return Unauthorized();
+            return Ok(_userService.Find(userId));
         }
     }
 }

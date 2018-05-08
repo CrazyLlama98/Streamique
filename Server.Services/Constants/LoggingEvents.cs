@@ -30,6 +30,7 @@ namespace Server.Services.Constants
         /// UserService events (Codes from 2100 - 2199) <br>
         /// LobbyService events (Codes from 2200 - 2299) <br>
         /// LobbyJoinRequestService (Codes from 2300 - 2399) <br>
+        /// MessageService (Codes from 2400 - 2499) <br>
         /// </summary>
         public static class CustomServiceEvents
         {
@@ -43,13 +44,15 @@ namespace Server.Services.Constants
             public const int LobbyDeleteInformation = 2206;
             public const int LobbyDeleteError = 2207;
             public const int LobbyJoinRequestCreateError = 2301;
-            public const int LobbyJoinRequestCreateInformation = 2202;
-            public const int LobbyJoinRequestUpdateError = 2203;
-            public const int LobbyJoinRequestUpdateInformation = 2204;
-            public const int LobbyJoinRequestUpdateEntryNotFound = 2205;
-            public const int LobbyJoinRequestDeleteEntryNotFound = 2206;
-            public const int LobbyJoinRequestDeleteInformation = 2206;
-            public const int LobbyJoinRequestDeleteError = 2207;
+            public const int LobbyJoinRequestCreateInformation = 2302;
+            public const int LobbyJoinRequestUpdateError = 2303;
+            public const int LobbyJoinRequestUpdateInformation = 2304;
+            public const int LobbyJoinRequestUpdateEntryNotFound = 2305;
+            public const int LobbyJoinRequestDeleteEntryNotFound = 2306;
+            public const int LobbyJoinRequestDeleteInformation = 2306;
+            public const int LobbyJoinRequestDeleteError = 2307;
+            public const int NewMessageAddError = 2401;
+            public const int NewMessageInformationError = 2402;
         }
     }
 }
