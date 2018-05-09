@@ -27,7 +27,7 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMessagesByLobbyId(int? lobbyId, int? page, int? pageSize)
+        public IActionResult GetMessagesByLobbyId(int? lobbyId, int? page = null, int? pageSize = null)
         {
             if (!lobbyId.HasValue)
                 return BadRequest();

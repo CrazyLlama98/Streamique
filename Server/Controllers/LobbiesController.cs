@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +25,7 @@ namespace Server.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<LobbyDto>))]
-        public IActionResult GetLobbies(int? hostId)
+        public IActionResult GetLobbies(int? hostId = null)
         {
             if (hostId.HasValue)
             {
