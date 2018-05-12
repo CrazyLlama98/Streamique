@@ -31,23 +31,20 @@ HEADERS += \
 
 FORMS   += mainwindow.ui
 
-#requires(qtConfig(udpsocket))
-#requires(qtConfig(listwidget))
-
 unix {
 QT += x11extras
-INCLUDEPATH += $$PWD/pjproject-2.7.2/pjsip/include \
-               $$PWD/pjproject-2.7.2/pjlib/include \
-               $$PWD/pjproject-2.7.2/pjlib-util/include \
-               $$PWD/pjproject-2.7.2/pjmedia/include \
-               $$PWD/pjproject-2.7.2/pjnath/include
+INCLUDEPATH += $$PWD/pjproject/pjsip/include \
+               $$PWD/pjproject/pjlib/include \
+               $$PWD/pjproject/pjlib-util/include \
+               $$PWD/pjproject/pjmedia/include \
+               $$PWD/pjproject/pjnath/include
 
-    LIBS += -L$$PWD/pjproject-2.7.2/pjsip/lib \
-            -L$$PWD/pjproject-2.7.2/pjlib/lib \
-            -L$$PWD/pjproject-2.7.2/pjlib-util/lib \
-            -L$$PWD/pjproject-2.7.2/pjmedia/lib \
-            -L$$PWD/pjproject-2.7.2/pjnath/lib \
-            -L$$PWD/pjproject-2.7.2/third_party/lib \
+    LIBS += -L$$PWD/pjproject/pjsip/lib \
+            -L$$PWD/pjproject/pjlib/lib \
+            -L$$PWD/pjproject/pjlib-util/lib \
+            -L$$PWD/pjproject/pjmedia/lib \
+            -L$$PWD/pjproject/pjnath/lib \
+            -L$$PWD/pjproject/third_party/lib \
     -lpjsua2-x86_64-unknown-linux-gnu \
     -lpjsua-x86_64-unknown-linux-gnu \
     -lpjsip-simple-x86_64-unknown-linux-gnu \
@@ -80,6 +77,7 @@ INCLUDEPATH += $$PWD/pjproject-2.7.2/pjsip/include \
     -lv4l2 \
     -lX11
 }
+
 
 RESOURCES += \
     images.qrc \
