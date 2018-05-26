@@ -11,6 +11,7 @@ namespace Server.Data.Models
         public string Nickname { get; set; }
         [Required]
         public string AccountImageUrl { get; set; }
+        public string LastUsedIPAddress { get; set; }
         public IEnumerable<Lobby> Lobbies { get; set; }
         public IEnumerable<Message> Messages { get; set; }
     }

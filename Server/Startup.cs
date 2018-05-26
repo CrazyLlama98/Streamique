@@ -9,6 +9,7 @@ using System.Reflection;
 using NJsonSchema;
 using NSwag.SwaggerGeneration.Processors.Security;
 using NSwag;
+using Microsoft.AspNetCore.Http;
 
 namespace Server
 {
@@ -28,6 +29,7 @@ namespace Server
                 .AddSwagger()
                 .AddJwtAuthenticationOptions(Configuration["Jwt:Issuer"], Configuration["Jwt:Key"])
                 .AddUserDbContext(Configuration.GetConnectionString("VideoPanzerDatabase"))
+                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddRepositories()
                 .AddServerServices()
                 .AddAutoMapperProfiles()

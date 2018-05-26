@@ -8,5 +8,6 @@
         public string Nickname { get; set; }
         public string AccountImageUrl { get; set; }
         public string Phone { get; set; }
+        public string IPAddress { get; set; }
     }
 }

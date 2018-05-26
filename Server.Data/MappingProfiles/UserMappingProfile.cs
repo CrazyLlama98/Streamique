@@ -16,7 +16,8 @@ namespace Server.Data.MappingsProfiles
                 .ForMember(dest => dest.AccountImageUrl, opt => opt.ResolveUsing(src => $"/images/profile-{src.AccountImageId}.png"));
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.Username, opt => opt.ResolveUsing(src => src.UserName))
-                .ForMember(dest => dest.Phone, opt => opt.ResolveUsing(src => src.PhoneNumber));
+                .ForMember(dest => dest.Phone, opt => opt.ResolveUsing(src => src.PhoneNumber))
+                .ForMember(dest => dest.IPAddress, opt => opt.ResolveUsing(src => src.LastUsedIPAddress));
         }
     }
 }
