@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Server.Data\Server.Data.csproj" />
+    <ProjectReference Include="..\Server.EventBus\Server.EventBus.csproj" />
     <ProjectReference Include="..\Server.Services\Server.Services.csproj" />
   </ItemGroup>
 

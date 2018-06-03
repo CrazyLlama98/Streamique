@@ -5,23 +5,28 @@ using Microsoft.Extensions.Logging;
 using Server.Data.DTOs;
 using Server.Data.Interfaces;
 using Server.Data.Models;
+using Server.EventBus.Interfaces;
 using Server.Services.Constants;
+using Server.Services.IntegrationEvents.LobbyJoinRequestsEvents;
 using Server.Services.Interfaces;
 
 namespace Server.Services
 {
     public class LobbyJoinRequestService : GenericService<LobbyJoinRequest, LobbyJoinRequestDto>, ILobbyJoinRequestService
     {
-        private ILobbyRepository _lobbyRepository;
+        private readonly ILobbyRepository _lobbyRepository;
+        private readonly IEventBus _eventBus;
 
         public LobbyJoinRequestService(
             ILobbyJoinRequestRepository repository, 
             ILobbyRepository lobbyRepository,
+            IEventBus eventBus,
             IMapper mapper, 
             ILogger<LobbyJoinRequestService> logger) 
             : base(repository, mapper, logger)
         {
             _lobbyRepository = lobbyRepository;
+            _eventBus = eventBus;
         }
 
         public bool AcceptLobbyJoinRequest(int id, int userId)
@@ -39,6 +44,11 @@ namespace Server.Services
                 existingLobbyJoinRequest.Accepted = true;
                 Repository.Update(existingLobbyJoinRequest);
                 Repository.SaveChanges();
+                _eventBus.Publish(new AcceptJoinRequestEvent()
+                {
+                    AcceptedUserId = existingLobbyJoinRequest.UserId.Value,
+                    LobbyId = existingLobbyJoinRequest.LobbyId.Value
+                });
                 return true;
             }
             catch (Exception e)
@@ -65,6 +75,12 @@ namespace Server.Services
                 Repository.SaveChanges();
                 Logger.LogInformation(LoggingEvents.CustomServiceEvents.LobbyJoinRequestCreateInformation, "User with id = {USERID} created a join request for lobby with id = {LOBBYID}",
                     userId, lobbyId);
+                _eventBus.Publish(new CreateJoinRequestEvent()
+                {
+                    Accepted = newLobbyJoinRequest.Accepted,
+                    LobbyId = newLobbyJoinRequest.LobbyId.Value,
+                    UserId = newLobbyJoinRequest.UserId.Value
+                });
                 return Mapper.Map<LobbyJoinRequestDto>(newLobbyJoinRequest);
             }
             catch (Exception e)
@@ -87,8 +103,15 @@ namespace Server.Services
                 }
                 if (existingLobbyJoinRequest.UserId != userId && userId != existingLobbyJoinRequest.Lobby.HostId)
                     return false;
+                var deleteJoinRequestEvent = new DeleteJoinRequestEvent()
+                {
+                    LobbyId = existingLobbyJoinRequest.LobbyId.Value,
+                    UserId = existingLobbyJoinRequest.UserId.Value,
+                    RemoveUserFromLobby = existingLobbyJoinRequest.Accepted
+                };
                 Repository.Delete(existingLobbyJoinRequest);
                 Repository.SaveChanges();
+                _eventBus.Publish(deleteJoinRequestEvent);
                 return true;
             }
             catch (Exception e)

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Server.Data.DTOs;
 using Server.Data.Models;
 
@@ -10,7 +11,8 @@ namespace Server.Data.MappingProfiles
         {
             CreateMap<LobbyJoinRequest, LobbyJoinRequestDto>();
             CreateMap<Lobby, LobbyDto>();
-            CreateMap<LobbyCreationDto, Lobby>();
+            CreateMap<LobbyCreationDto, Lobby>()
+                .ForMember(dest => dest.DateCreated, opt => opt.UseValue(DateTime.Now));
             CreateMap<LobbyUpdateDto, Lobby>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
         }

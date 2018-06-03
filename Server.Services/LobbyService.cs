@@ -5,16 +5,22 @@ using Microsoft.Extensions.Logging;
 using Server.Data.DTOs;
 using Server.Data.Interfaces;
 using Server.Data.Models;
+using Server.EventBus.Interfaces;
 using Server.Services.Constants;
+using Server.Services.IntegrationEvents.LobbyEvents;
 using Server.Services.Interfaces;
 
 namespace Server.Services
 {
     public class LobbyService : GenericService<Lobby, LobbyDto>, ILobbyService
     {
-        public LobbyService(ILobbyRepository repository, IMapper mapper, ILogger<LobbyService> logger) 
+        private readonly IEventBus _eventBus;
+
+        public LobbyService(ILobbyRepository repository, IMapper mapper, ILogger<LobbyService> logger, IEventBus eventBus) 
             : base(repository, mapper, logger)
-        { }
+        {
+            _eventBus = eventBus;
+        }
 
         public LobbyDto CreateLobby(LobbyCreationDto newLobby, int userId)
         {
@@ -26,7 +32,10 @@ namespace Server.Services
                 Repository.SaveChanges();
                 Logger.LogInformation(LoggingEvents.CustomServiceEvents.LobbyCreateInformation, "New Lobby Created for user with id = {ID}",
                     userId);
-                return Mapper.Map<LobbyDto>(lobbyModel);
+                var lobby = Mapper.Map<LobbyDto>(Repository.Find(lobbyModel.Id));
+                if (lobby != null)
+                    _eventBus.Publish(new CreateLobbyEvent() { NewLobby = lobby });
+                return lobby;
             }
             catch (Exception e)
             {
@@ -50,6 +59,7 @@ namespace Server.Services
                     return false;
                 Repository.Delete(existingLobby);
                 Repository.SaveChanges();
+                _eventBus.Publish(new DeleteLobbyEvent() { DeletedLobbyId = lobbyId });
                 return true;
             }
             catch (Exception e)
@@ -115,6 +125,7 @@ namespace Server.Services
                     return false;
                 Repository.Update(Mapper.Map(lobby, existingLobby));
                 Repository.SaveChanges();
+                _eventBus.Publish(new UpdateLobbyEvent() { UpdatedLobbyId = lobbyId, UpdatedLobby = Mapper.Map<LobbyDto>(existingLobby) });
                 return true;
             }
             catch (Exception e)
