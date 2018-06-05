@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/phone.png</file>
+        <file>images/phone_hang.png</file>
+        <file>images/ringer.png</file>
+        <file>images/about.png</file>
+        <file>images/logo_transparent.ico</file>
+        <file>images/logo_transparent.png</file>
+    </qresource>
+</RCC>
