@@ -2,7 +2,7 @@
 using Server.Data.DTOs;
 using Server.Data.Models;
 
-namespace Server.Data.MappingsProfiles
+namespace Server.Data.MappingProfiles
 {
     public class UserMappingProfile : Profile
     {

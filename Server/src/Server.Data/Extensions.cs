@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using Server.Data.MappingsProfiles;
 using Server.Data.Interfaces;
 using Server.Data.Repositories;
 using Server.Data.MappingProfiles;

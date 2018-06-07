@@ -39,7 +39,7 @@ namespace Server.Services
             _mapper = mapper;
         }
 
-        public string GenerateJwt(string email)
+        public virtual string GenerateJwt(string email)
         {
             try
             {
@@ -60,12 +60,12 @@ namespace Server.Services
             }
         }
 
-        public async Task<IdentityResult> RegisterUserAsync(RegistrationDto registerDto)
+        public virtual async Task<IdentityResult> RegisterUserAsync(RegistrationDto registerDto)
         {
             try
             {
                 User newUser = _mapper.Map<User>(registerDto);
-                newUser.LastUsedIPAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                newUser.LastUsedIPAddress = _accessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString();
                 return await _userManager.CreateAsync(newUser, registerDto.Password);
             }
             catch (Exception e)
@@ -75,7 +75,7 @@ namespace Server.Services
             }
         }
 
-        public async Task<SignInResult> LoginUserAsync(LoginDto loginDto)
+        public virtual async Task<SignInResult> LoginUserAsync(LoginDto loginDto)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace Server.Services
 
         private async Task UpdateLastUsedIPAsync(User user)
         {
-            var ipAddress = _accessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var ipAddress = _accessor?.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4()?.ToString();
             if (!String.IsNullOrWhiteSpace(user.LastUsedIPAddress) && ! user.LastUsedIPAddress.Equals(ipAddress, StringComparison.OrdinalIgnoreCase))
             {
                 user.LastUsedIPAddress = ipAddress;
