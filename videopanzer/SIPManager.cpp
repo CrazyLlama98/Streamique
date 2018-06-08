@@ -96,6 +96,7 @@ void SIPManager::makeCall(pjsua_acc_id accountId, const QString &number)
         if (auto callingSIPAccount = pj::Account::lookup(accountId)) {
             auto newSIPCall = new SIPCall(this, *callingSIPAccount);
             pj::CallOpParam callOperationParameter(true);
+            //callOperationParameter.opt.videoCount = 0;
             newSIPCall->makeCall(number.toStdString(), callOperationParameter);
             qDebug() << "Making call with id: " << newSIPCall->getId();
         }

@@ -33,8 +33,6 @@
 #include <algorithm>
 #include <fstream>
 
-#include "client.h"
-
 namespace Ui
 {
     class MainWindow;
@@ -48,18 +46,11 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     virtual ~MainWindow() override;
 
-public slots:
-    void appendMessage(const QString &from, const QString &message);
-
 private slots:
     void onHangup();
     void onCallStateChanged(const pj::CallInfo& callInfo);
     void onNewVideoWidget(QWidget* videoWidget);
     void onAboutToDeleteVideoWidget(QWidget* videoWidget);
-
-    void returnPressed();
-    void newParticipant(const QString &nick);
-    void participantLeft(const QString &nick);
 
     void onFinished(QNetworkReply *);
 
@@ -90,7 +81,6 @@ private:
     QSoundEffect ringtone;
     QSoundEffect outgoingRing;
 
-    Client client;
     QString myNickName;
     QTextTableFormat tableFormat;
 
@@ -116,8 +106,8 @@ private:
     QListWidget* usersOnChatList;
     QTextEdit* messageHistoryBox;
     QLabel* messageLabel; //literally a label with message written on it
+    QWidget* videoContainer = nullptr;
 
-    //QString usersFilePath = "/home/matei/Desktop/QtStuff/login_test/dummy_users.txt"; //???HOW TO WORK WITH CURRENT DIR
     QHash <QString, int> users;
     QString loggedUser = "";
     QNetworkAccessManager *NAM;

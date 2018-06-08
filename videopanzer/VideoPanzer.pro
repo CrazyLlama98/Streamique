@@ -11,11 +11,7 @@ SOURCES += main.cpp\
         SIPCall.cpp \
     VideoWidgetManager.cpp \
     MainWindow.cpp \
-    VideoWidget.cpp \
-    client.cpp \
-    connection.cpp \
-    peermanager.cpp \
-    server.cpp
+    VideoWidget.cpp
 
 HEADERS += \
         SIPManager.h \
@@ -23,11 +19,7 @@ HEADERS += \
         SIPCall.h \
     VideoWidgetManager.h \
     MainWindow.h \
-    VideoWidget.h \
-    client.h \
-    connection.h \
-    peermanager.h \
-    server.h
+    VideoWidget.h
 
 FORMS   += mainwindow.ui
 
